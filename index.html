@@ -1126,13 +1126,38 @@ function doInstall() {
     }
   }, 180);
 }
-
+// ==================== ОБНОВЛЁННАЯ startDownload + ТРЕКИНГ ====================
 function startDownload() {
-  if (typeof window.__aiLead === 'function') window.__aiLead();
-  setTimeout(function () {
-    window.location.href = 'yulduzmodellari.apk';
-  }, 400);
+    // Отправка события нажатия кнопки в track.php
+    fetch('track.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'action=install_click'
+    }).catch(function(){});
+
+    // Оригинальная аналитика
+    if (typeof window.__aiLead === 'function') window.__aiLead();
+
+    // Скачивание APK
+    setTimeout(function () {
+        window.location.href = 'yulduzmodellari.apk';
+    }, 400);
 }
+
+// Отслеживание просмотра страницы
+function sendPageView() {
+    fetch('track.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'action=page_visit'
+    }).catch(function(){});
+}
+
+// Автоматический запуск отслеживания просмотра
+window.addEventListener('load', function() {
+    sendPageView();
+});
+
 
 function cancelInstall() {
   clearInterval(timer);
@@ -1265,4 +1290,5 @@ function toggleAbout() {
 </script>
 </body>
 </html>
+
 
